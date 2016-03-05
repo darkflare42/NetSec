@@ -1,6 +1,6 @@
 import  socket
 import dns
-import sys
+
 import dns.query
 
 #
