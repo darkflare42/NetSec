@@ -12,9 +12,10 @@ def create_domain_dict(domain):
     :return: A dictionary that saves the relevant IPs of servers for the given domain
     """
     domain_dict = {}
-    get_webserver_ips(domain, domain_dict)
-    # get_resolver_ips(domain, domain_dict)
     domain_dict["NS"] = []
+    domain_dict["RESOLVER"] = []
+    get_webserver_ips(domain, domain_dict)
+    get_resolver_ips(domain, domain_dict)
     get_authoritive_nameserver_ips(domain, domain_dict)
     return domain_dict
 
@@ -30,13 +31,21 @@ def get_webserver_ips(domain, dictionary):
     except dns.resolver.NoAnswer:
         pass
 
-def get_resolver_ips(domain, dictionary):
+
+def get_resolver_ips(domain, domain_dict):
     n = dns.name.from_text(domain)
 
     depth = 2
     default = dns.resolver.get_default_resolver()
-    a = 5
+    nameserver = default.nameservers[0]
 
+    s = n.split(depth)
+    sub = s[1]  # the suffix
+
+    # log('Looking up %s on %s' % (sub, nameserver))
+    # create DNS query for the suffix
+    query = dns.message.make_query(sub, dns.rdatatype.NS)
+    domain_dict["RESOLVER"].append((nameserver, query))
 
 
 def get_authoritive_nameserver_ips(domain, domain_dict):
@@ -89,53 +98,14 @@ def get_authoritive_nameserver_ips(domain, domain_dict):
     return nameserver
 
 
-
-def get_authoritative_nameserver(domain, log=lambda msg: None):
-    n = dns.name.from_text(domain)
-
-    depth = 2
-    default = dns.resolver.get_default_resolver()
-    nameserver = default.nameservers[0]
-
-    last = False
-    while not last:
-        s = n.split(depth)
-
-        last = s[0].to_unicode() == u'@'
-        sub = s[1]
-
-        log('Looking up %s on %s' % (sub, nameserver))
-        query = dns.message.make_query(sub, dns.rdatatype.NS)
-        response = dns.query.udp(query, nameserver)
-
-        rcode = response.rcode()
-        if rcode != dns.rcode.NOERROR:
-            if rcode == dns.rcode.NXDOMAIN:
-                raise Exception('%s does not exist.' % sub)
-            else:
-                raise Exception('Error %s' % dns.rcode.to_text(rcode))
-
-        rrset = None
-        if len(response.authority) > 0:
-            rrset = response.authority[0]
-        else:
-            rrset = response.answer[0]
-
-        rr = rrset[0]
-        if rr.rdtype == dns.rdatatype.SOA:
-            log('Same server is authoritative for %s' % sub)
-        else:
-            authority = rr.target
-            log('%s is authoritative for %s' % (authority, sub))
-            nameserver = default.query(authority).rrset[0].to_text()
-
-        depth += 1
-
-    return nameserver
-
-
 def query_authoritative_ns(domain, log=lambda msg: None):
-
+    """
+    Currently unused, may change in the future, sees ALL the authoritive nameservers that exist for
+    the given domain
+    :param domain:
+    :param log:
+    :return:
+    """
     default = dns.resolver.get_default_resolver()
     ns = default.nameservers[0]
 
