@@ -1,7 +1,7 @@
 # this is a test
 from NetModule import *
 
-createDomainDict("www.yahoo.com")
+create_domain_dict("www.yahoo.com")
 
 def log(msg):
     print(msg)
