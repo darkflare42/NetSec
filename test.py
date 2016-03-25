@@ -8,14 +8,14 @@ import dns.query
 # server_address = ('80.77.12.178', 10000)
 # sock.connect(server_address)
 # sock.send("h")
-# h=sock.recv((222));
+# h=sock.recv((222));ss
 #
 IP_ADDRESS='60.6.75.31'
 queryCheck = dns.message.make_query('www.google.com', 2)
 dns.query.tcp(queryCheck,IP_ADDRESS)
 
 # def checkIfTcp(serverAddress):
-#   #  try:
+#   #  try:sdf
 #         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 #         server_address=(serverAddress,10000);
 #         sock.connect(server_address)
