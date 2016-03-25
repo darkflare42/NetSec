@@ -5,14 +5,22 @@ import dns.name
 import dns.query
 
 
-
-def createDomainDict(domain):
+def create_domain_dict(domain):
+    """
+    The function receives a domain and returns a map of IPs for its resolvers, nameservers and http servers
+    :param domain: A domain to create an IP dictionary for, in string format
+    :return: A dictionary that saves the relevant IPs of servers for the given domain
+    """
     domain_dict = {}
-    getDomainIPS(domain, domain_dict)
-    a = 5
+    domain_dict["NS"] = []
+    domain_dict["RESOLVER"] = []
+    get_webserver_ips(domain, domain_dict)
+    get_resolver_ips(domain, domain_dict)
+    get_authoritive_nameserver_ips(domain, domain_dict)
+    return domain_dict
 
 
-def getDomainIPS(domain, dictionary):
+def get_webserver_ips(domain, dictionary):
     try:
         answers = dns.resolver.query(domain, "A") #ipv4
         for rdata in answers:
@@ -24,7 +32,23 @@ def getDomainIPS(domain, dictionary):
         pass
 
 
-def get_authoritative_nameserver(domain, log=lambda msg: None):
+def get_resolver_ips(domain, domain_dict):
+    n = dns.name.from_text(domain)
+
+    depth = 2
+    default = dns.resolver.get_default_resolver()
+    nameserver = default.nameservers[0]
+
+    s = n.split(depth)
+    sub = s[1]  # the suffix
+
+    # log('Looking up %s on %s' % (sub, nameserver))
+    # create DNS query for the suffix
+    query = dns.message.make_query(sub, dns.rdatatype.NS)
+    domain_dict["RESOLVER"].append((nameserver, query))
+
+
+def get_authoritive_nameserver_ips(domain, domain_dict):
     n = dns.name.from_text(domain)
 
     depth = 2
@@ -33,12 +57,14 @@ def get_authoritative_nameserver(domain, log=lambda msg: None):
 
     last = False
     while not last:
+        # split the domain to see what the suffix is (.com, .net etc.)
         s = n.split(depth)
 
         last = s[0].to_unicode() == u'@'
-        sub = s[1]
+        sub = s[1]  # the suffix
 
-        log('Looking up %s on %s' % (sub, nameserver))
+        # log('Looking up %s on %s' % (sub, nameserver))
+        # create DNS query for the suffix
         query = dns.message.make_query(sub, dns.rdatatype.NS)
         response = dns.query.udp(query, nameserver)
 
@@ -57,19 +83,29 @@ def get_authoritative_nameserver(domain, log=lambda msg: None):
 
         rr = rrset[0]
         if rr.rdtype == dns.rdatatype.SOA:
-            log('Same server is authoritative for %s' % sub)
+            # log('Same server is authoritative for %s' % sub)
+            a= 5
         else:
+            # authority is the actual server name
+            # nameserver is the IP of the server name
             authority = rr.target
-            log('%s is authoritative for %s' % (authority, sub))
             nameserver = default.query(authority).rrset[0].to_text()
+            domain_dict["NS"].append((nameserver, query))
+            a=5
 
         depth += 1
 
     return nameserver
 
 
-def query_authoritative_ns (domain, log=lambda msg: None):
-
+def query_authoritative_ns(domain, log=lambda msg: None):
+    """
+    Currently unused, may change in the future, sees ALL the authoritive nameservers that exist for
+    the given domain
+    :param domain:
+    :param log:
+    :return:
+    """
     default = dns.resolver.get_default_resolver()
     ns = default.nameservers[0]
 
