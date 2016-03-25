@@ -8,7 +8,7 @@ import dns.query
 # server_address = ('80.77.12.178', 10000)
 # sock.connect(server_address)
 # sock.send("h")
-# h=sock.recv((222));ss
+# h=sock.recv((222));sssd
 #
 IP_ADDRESS='60.6.75.31'
 queryCheck = dns.message.make_query('www.google.com', 2)
