@@ -3,6 +3,8 @@ import dns
 import dns.query
 import threading
 
+TIME_INTERVAL = 10 #ms
+
 
 
 def createTcpConnection(threadName,IP_ADDRESS,queryCheck):
@@ -29,25 +31,26 @@ def createThreads(NumberofThreads):
         t=threading.Thread(target=createTcpConnection,args=("thread name %d"%(i,),'8.8.8.8',PORT_IN_USE))
         t.start()
 
+def checkIfSupportTCP(info):
+    pass
 
-#createThreads(40)
-# def checkIfTcp(serverAddress):
-#   #  try:sdf
-#         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-#         server_address=(serverAddress,10000);
-#         sock.connect(server_address)
-#     #except:
-#         print("h")
-#
-# #checkIfTcp('www.google.co.il')
-#
-#
-#
-#
-# s =  socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-# result = s.connect_ex(('113.165.88.235 ', 10000))
-# s.close()
-# if result > 0:
-#     print("problem with socket!")
-# else:
-#     print("everything it's ok!")
+
+def startSendIncrementTCPQueries(info):
+    PORT_IN_USE = 1024
+
+    for i in range(NumberofThreads):
+        PORT_IN_USE += 1
+        t=threading.Thread(target=createTcpConnection,args=("thread name %d"%(i,),'8.8.8.8',PORT_IN_USE))
+        t.start()
+
+
+
+
+def dnsExhaust(info):
+    if checkIfSupportTCP(info)==False:
+        #create string that this ns do not support Tcp connection .
+    else:
+        info = startSendIncrementTCPQueries(info);
+
+
+

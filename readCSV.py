@@ -1,7 +1,7 @@
 import csv
 import csv
 from NetModule import *
-from test import *
+from exhaustingTools import *
 
 def urlGenerator():
     with open('C:\\Users\\Omer\\Desktop\\top.csv', 'r') as f:
