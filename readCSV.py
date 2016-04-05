@@ -9,7 +9,7 @@ def urlGenerator():
         for numberOfLine,URL in reader:
             yield URL
     yield True
-
+#
 def startExhust(exhustServerInfo):
     nsString=[]
     ns = exhustServerInfo['NS']
