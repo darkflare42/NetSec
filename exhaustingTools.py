@@ -2,6 +2,7 @@ import  socket
 import dns
 import dns.query
 import threading
+import time;
 
 TIME_INTERVAL = 10 #ms
 
@@ -37,13 +38,19 @@ def checkIfSupportTCP(info):
 
 def startSendIncrementTCPQueries(info):
     PORT_IN_USE = 1024
-
-    for i in range(NumberofThreads):
-        PORT_IN_USE += 1
-        t=threading.Thread(target=createTcpConnection,args=("thread name %d"%(i,),'8.8.8.8',PORT_IN_USE))
-        t.start()
-
-
+    global TIME_INTERVAL
+    numberOfConnection =1
+    allThread = []
+    try:
+        while True:
+            PORT_IN_USE += 1
+            t=threading.Thread(target=createTcpConnection,args=("thread name %d"%(i,),'8.8.8.8',PORT_IN_USE))
+            allThread.append(t)
+            t.start()
+            time.sleep(TIME_INTERVAL)
+    except:
+        #using flag
+        [t.stop() for t in allThread]
 
 
 def dnsExhaust(info):
