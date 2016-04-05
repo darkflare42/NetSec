@@ -3,6 +3,7 @@ import dns.resolver #http://www.dnspython.org/
 import dns
 import dns.name
 import dns.query
+import urllib.parse
 
 
 def create_domain_dict(domain):
@@ -11,9 +12,7 @@ def create_domain_dict(domain):
     :param domain: A domain to create an IP dictionary for, in string format
     :return: A dictionary that saves the relevant IPs of servers for the given domain
     """
-    domain_dict = {}
-    domain_dict["NS"] = []
-    domain_dict["RESOLVER"] = []
+    domain_dict = {"NS": [], "RESOLVER": []}
     get_webserver_ips(domain, domain_dict)
     get_resolver_ips(domain, domain_dict)
     get_authoritive_nameserver_ips(domain, domain_dict)
@@ -152,6 +151,34 @@ def query_authoritative_ns(domain, log=lambda msg: None):
                     pass
 
     return result
+
+CRLF = "\r\n\r\n"
+GETREQUEST = "GET / HTTP/1.1" + CRLF + "Connection: keep-alive" + CRLF + CRLF
+
+def http_request(url):
+    url = urllib.parse.urlparse(url)
+    path = url.path
+
+    if path == "":
+        path = "/"
+
+    HOST = url[2]
+    PORT = 80
+
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.settimeout(0.30)
+
+    #sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+    sock.connect((HOST, PORT))
+
+    sock.send(GETREQUEST.encode())
+    data = (sock.recv(1000000))
+
+    print(data.decode())
+
+    #sock.shutdown(1)
+    #sock.close()
 
 
 

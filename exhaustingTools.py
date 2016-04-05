@@ -2,7 +2,7 @@ import  socket
 import dns
 import dns.query
 import threading
-import time;
+import time
 
 TIME_INTERVAL = 10 #ms
 NOT_TCP = 2
@@ -13,6 +13,13 @@ def createTcpConnection(threadName,IP_ADDRESS,queryCheck):
         print(threadName)
         print(dns.query.tcp(queryCheck,IP_ADDRESS))
 
+# def portIsOpen(portNum):
+#     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+#     result = sock.connect_ex(('127.0.0.1', portNum))
+#     print(result)
+#     if result == 0:
+#         return True;
+#     return False
 
 
 

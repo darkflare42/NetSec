@@ -27,6 +27,7 @@ def startExhust(exhustServerInfo):
 
 
 def main():
+    http_request("128.139.199.8")  # GOOGLE
     getURL=urlGenerator()
     url = next(getURL);
     while url!=True:
