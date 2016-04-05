@@ -5,8 +5,8 @@ import threading
 
 
 
-def createTcpConnection(threadName,IP_ADDRESS,SOURCE_PORT):
-    queryCheck = dns.message.make_query('www.google.com', 2)
+def createTcpConnection(threadName,IP_ADDRESS,queryCheck):
+    #queryCheck = dns.message.make_query('www.google.com', 2)
     while True:
         print(threadName)
         print(dns.query.tcp(queryCheck,IP_ADDRESS))
@@ -30,7 +30,7 @@ def createThreads(NumberofThreads):
         t.start()
 
 
-createThreads(40)
+#createThreads(40)
 # def checkIfTcp(serverAddress):
 #   #  try:sdf
 #         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
