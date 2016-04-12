@@ -6,7 +6,7 @@ import time
 
 CRLF = "\r\n\r\n"
 GETREQUEST = "GET / HTTP/1.1" + CRLF + "Connection: keep-alive" + CRLF + CRLF
-TIME_INTERVAL = 0.05  # ms
+TIME_INTERVAL = 1  # ms
 
 class Threaded_Test(threading.Thread):
     def __init__(self, bucket, site_url):
@@ -26,8 +26,8 @@ class Threaded_Test(threading.Thread):
 
         try:
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.settimeout(0.30)
-            # sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            # sock.settimeout(0.30)
+            #sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
             sock.connect((HOST, PORT))
         except:
