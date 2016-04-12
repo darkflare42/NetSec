@@ -27,7 +27,8 @@ def startExhust(exhustServerInfo):
 
 
 def main():
-    http_request("128.139.199.8")  # GOOGLE
+    # http_request("128.139.199.8")  # GOOGLE
+    num_of_connections = test_HTTP_connection_tolerance("128.139.199.8")
     getURL=urlGenerator()
     url = next(getURL);
     while url!=True:

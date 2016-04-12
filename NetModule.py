@@ -4,6 +4,8 @@ import dns
 import dns.name
 import dns.query
 import urllib.parse
+import time
+import sys
 
 
 def create_domain_dict(domain):
@@ -151,34 +153,4 @@ def query_authoritative_ns(domain, log=lambda msg: None):
                     pass
 
     return result
-
-CRLF = "\r\n\r\n"
-GETREQUEST = "GET / HTTP/1.1" + CRLF + "Connection: keep-alive" + CRLF + CRLF
-
-def http_request(url):
-    url = urllib.parse.urlparse(url)
-    path = url.path
-
-    if path == "":
-        path = "/"
-
-    HOST = url[2]
-    PORT = 80
-
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    sock.settimeout(0.30)
-
-    #sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
-    sock.connect((HOST, PORT))
-
-    sock.send(GETREQUEST.encode())
-    data = (sock.recv(1000000))
-
-    print(data.decode())
-
-    #sock.shutdown(1)
-    #sock.close()
-
-
 
