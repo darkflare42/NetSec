@@ -28,14 +28,14 @@ def startExhust(exhustServerInfo):
 
 def main():
     # http_request("128.139.199.8")  # GOOGLE
-    num_of_connections = test_HTTP_connection_tolerance("128.139.199.8")
+    num_of_connections = test_HTTP_connection_tolerance("128.139.199.8")  # OR: This is to test the http tolerance
     getURL=urlGenerator()
     url = next(getURL);
     while url!=True:
         url = next(getURL);
         exhustServerInfo=create_domain_dict(url)
         print(exhustServerInfo)
-        return;
+        return
         infoToWrite=startExhust(exhustServerInfo)
         return
     print("finito")
