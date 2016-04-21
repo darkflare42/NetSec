@@ -56,7 +56,7 @@ class Threaded_Test(threading.Thread):
                 h1.request("GET", "/home/0,7340,L-8,00.html")
                 r1 = h1.getresponse()
                 r1.read()
-                print(r1.status , r1.reason)
+                #print(r1.status , r1.reason)
                 if(r1.status != 200):
                     raise Exception("Server stopped responding 200")
                 # sock.send(testmsg.encode())

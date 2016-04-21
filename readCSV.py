@@ -17,29 +17,31 @@ def urlGenerator():
 #
 #
 def startExhust(exhustServerInfo):
-    print(exhustServerInfo)
     nsString=[]
+    #TODO OR PLEASE MAKE SURE THE Http tool return any value you want. this value will be written to the "file3.csv
+    # at the folder of the running python files. best of luck
+    #Omer Ornan- English Teacher and sexual Instructor.
     print(str(exhustServerInfo['ipv4']))
     webInfo = test_HTTP_connection_tolerance(exhustServerInfo["DOM"], str(exhustServerInfo['ipv4']))
     wbSt='wsInfo: %d' % (webInfo,)
     print(wbSt)
-
+    print("hh")
     resolverString = []
     resolver = exhustServerInfo['RESOLVER']
     for rs in resolver:
         rsInfo = dnsExhaust(rs)
-        rsSt= 'dns info %s: %d' % (rs,rsInfo)
+        print(rsInfo)
+        print(rs[0])
+        rsSt= 'dns info %s: %s' % (rs[0],rsInfo)
         resolverString.append(rsInfo)
 
-
-    return #TODO CHANGE
     ns = exhustServerInfo['NS']
+    print("dfg")
     for nsInfo in ns:
+        print("dfgjj")
         dnsInfo = dnsExhaust(nsInfo)
-        stDns='nsInfo %s: %d'%(ns, dnsInfo)
+        stDns='nsInfo %s: %s'%(nsInfo[0], dnsInfo)
         nsString.append(stDns)
-
-
     return {'nsInfo' : nsString, 'webInfo' : wbSt, 'resInfo' : resolverString}
 
 
@@ -51,7 +53,7 @@ def main():
     #thread_obj = HTTP_Tester.Threaded_Test(bucket, 'www.ynet.co.il', "128.139.199.8")
     #thread_obj.start()
 
-    num_of_connections = test_HTTP_connection_tolerance("www.ynet.co.il" ,"128.139.199.8")  # OR: This is to test the http tolerance
+    #num_of_connections = test_HTTP_connection_tolerance("www.ynet.co.il" ,"128.139.199.8")  # OR: This is to test the http tolerance
     getURL=urlGenerator()
     url = next(getURL);
     writeToFile=csv.DictWriter(open('file3.csv','w'), delimiter=',',lineterminator='\n', fieldnames=headers)
