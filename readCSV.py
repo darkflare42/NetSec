@@ -18,7 +18,7 @@ def urlGenerator():
 def startExhust(exhustServerInfo):
     print(exhustServerInfo)
     nsString=[]
-    webInfo = test_HTTP_connection_tolerance(exhustServerInfo['ipv4'])
+    webInfo = test_HTTP_connection_tolerance(exhustServerInfo["DOM"], str(exhustServerInfo['ipv4']))
     wbSt='wsInfo: %d' % (webInfo,)
     return #TODO CHANGE
     ns = exhustServerInfo['NS']
@@ -39,7 +39,11 @@ def startExhust(exhustServerInfo):
 
 def main():
     # http_request("128.139.199.8")  # GOOGLE
-   # num_of_connections = test_HTTP_connection_tolerance("128.139.199.8")  # OR: This is to test the http tolerance
+    # bucket = queue.Queue()
+    # thread_obj = HTTP_Tester.Threaded_Test(bucket, "www.google.com", "128.139.199.8")
+    #thread_obj.start()
+
+    num_of_connections = test_HTTP_connection_tolerance("www.google.com", "128.139.199.8")  # OR: This is to test the http tolerance
     getURL=urlGenerator()
     url = next(getURL);
     writeToFile=csv.DictWriter(open('file3.csv','w'), delimiter=',',lineterminator='\n', fieldnames=headers)

@@ -14,7 +14,7 @@ def create_domain_dict(domain):
     :param domain: A domain to create an IP dictionary for, in string format
     :return: A dictionary that saves the relevant IPs of servers for the given domain
     """
-    domain_dict = {"NS": [], "RESOLVER": []}
+    domain_dict = {"DOM": domain, "NS": [], "RESOLVER": []}
     get_webserver_ips(domain, domain_dict)
     get_resolver_ips(domain, domain_dict)
     get_authoritive_nameserver_ips(domain, domain_dict)
@@ -23,10 +23,10 @@ def create_domain_dict(domain):
 
 def get_webserver_ips(domain, dictionary):
     try:
-        answers = dns.resolver.query(domain, "A") #ipv4
+        answers = dns.resolver.query(domain, "A")  # ipv4
         for rdata in answers:
             dictionary["ipv4"] = rdata
-        answers = dns.resolver.query(domain, "AAAA") #ipv6
+        answers = dns.resolver.query(domain, "AAAA")  # ipv6
         for rdata in answers:
             dictionary["ipv6"] = rdata
     except dns.resolver.NoAnswer:
