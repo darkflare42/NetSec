@@ -83,7 +83,9 @@ def test_HTTP_connection_tolerance(url, ip):
 
     while True:
         try:
+
             num_of_connections += 1
+            print("Num of connections is: " + str(num_of_connections))
             thread_obj = HTTP_Tester.Threaded_Test(bucket, url, ip)
             thread_obj.start()
             all_threads.append(thread_obj)
