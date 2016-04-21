@@ -15,6 +15,7 @@ def urlGenerator():
             yield URL
     yield True
 #
+#
 def startExhust(exhustServerInfo):
     print(exhustServerInfo)
     nsString=[]
