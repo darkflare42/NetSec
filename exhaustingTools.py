@@ -62,19 +62,20 @@ def dnsExhaust(info):
     if checkIfSupportTCP(info)==False:
         return "NS %d Does not support TCP connection"%(info[0],)
     else:
-        numberOfConnection = startSendIncrementTCPQueries(info);
+        numberOfConnection = startSendIncrementTCPQueries(info)
         return "NS support TCP. Stop working after %d ."%(numberOfConnection,)
 
 
 
 
 
-def test_HTTP_connection_tolerance(url):
-    '''
+def test_HTTP_connection_tolerance(url, ip):
+    """
     Does the same thing as the TCP Queries, but for HTTP
     :param info:
     :return: The number of HTTP connections the server allowed to open
-    '''
+    """
+
     INTERVAL = 0.1
     num_of_connections = 0
     all_threads = []
@@ -83,7 +84,7 @@ def test_HTTP_connection_tolerance(url):
     while True:
         try:
             num_of_connections += 1
-            thread_obj = HTTP_Tester.Threaded_Test(bucket, url)
+            thread_obj = HTTP_Tester.Threaded_Test(bucket, url, ip)
             thread_obj.start()
             all_threads.append(thread_obj)
             time.sleep(INTERVAL)
