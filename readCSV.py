@@ -18,14 +18,10 @@ def urlGenerator():
 def startExhust(exhustServerInfo):
     print(exhustServerInfo)
     nsString=[]
-    webInfo = test_HTTP_connection_tolerance(exhustServerInfo['ipv4'])
+    print(str(exhustServerInfo['ipv4']))
+    webInfo = test_HTTP_connection_tolerance(str(exhustServerInfo['ipv4']))
     wbSt='wsInfo: %d' % (webInfo,)
-    return #TODO CHANGE
-    ns = exhustServerInfo['NS']
-    for nsInfo in ns:
-        dnsInfo = dnsExhaust(nsInfo)
-        stDns='nsInfo %s: %d'%(ns, dnsInfo)
-        nsString.append(stDns)
+    print(wbSt)
 
     resolverString = []
     resolver = exhustServerInfo['RESOLVER']
@@ -33,6 +29,16 @@ def startExhust(exhustServerInfo):
         rsInfo = dnsExhaust(rs)
         rsSt= 'dns info %s: %d' % (rs,rsInfo)
         resolverString.append(rsInfo)
+
+
+    return #TODO CHANGE
+    ns = exhustServerInfo['NS']
+    for nsInfo in ns:
+        dnsInfo = dnsExhaust(nsInfo)
+        stDns='nsInfo %s: %d'%(ns, dnsInfo)
+        nsString.append(stDns)
+
+
     return {'nsInfo' : nsString, 'webInfo' : wbSt, 'resInfo' : resolverString}
 
 
