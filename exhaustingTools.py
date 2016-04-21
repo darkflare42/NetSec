@@ -91,6 +91,8 @@ def test_HTTP_connection_tolerance(url, ip):
             all_threads.append(thread_obj)
             time.sleep(INTERVAL)
             exc = bucket.get(block=False)
+        except RuntimeError as e:
+            print("Runtime Error!")
         except queue.Empty:
             pass
         else:

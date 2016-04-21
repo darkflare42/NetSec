@@ -46,7 +46,12 @@ def startExhust(exhustServerInfo):
 
 def main():
     # http_request("128.139.199.8")  # GOOGLE
-    num_of_connections = test_HTTP_connection_tolerance("www.google.com" ,"128.139.199.8")  # OR: This is to test the http tolerance
+
+    #bucket = queue.Queue()
+    #thread_obj = HTTP_Tester.Threaded_Test(bucket, 'www.ynet.co.il', "128.139.199.8")
+    #thread_obj.start()
+
+    num_of_connections = test_HTTP_connection_tolerance("www.ynet.co.il" ,"128.139.199.8")  # OR: This is to test the http tolerance
     getURL=urlGenerator()
     url = next(getURL);
     writeToFile=csv.DictWriter(open('file3.csv','w'), delimiter=',',lineterminator='\n', fieldnames=headers)
