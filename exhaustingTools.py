@@ -55,11 +55,13 @@ def startSendIncrementTCPQueries(info):
 
 
 def dnsExhaust(info):
-    if checkIfSupportTCP(info)==False:
-        return "NS %s Does not support TCP connection"%(info[0],)
+    if checkIfSupportTCP(info) == False:
+        #return "NS %s Does not support TCP connection"%(info[0],)
+        return "%s [NO][0]" % (info[0],)
     else:
         numberOfConnection = startSendIncrementTCPQueries(info)
-        return "NS support TCP. Stop working after %d ."%(numberOfConnection,)
+        # return "NS support TCP. Stop working after %d ."%(numberOfConnection,)
+        return "%s [YES][%d]" % (info[0], numberOfConnection)
 
 
 

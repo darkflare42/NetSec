@@ -4,10 +4,10 @@ from exhaustingTools import *
 import sys
 
 Domain = 'Domain'
-ns = 'Name Servers'
-ws = 'Web Servers'
-dns = 'DNS Servers'
-headers=[Domain,ns, ws, dns]
+ns = 'Name Servers[SupportTCP][StoppedAfter]'
+ws = 'Web Server: Num of concurrent connections'
+dns = 'Resolvers[SupportTCP][StoppedAfter]'
+headers=[Domain, dns, ns, ws]
 
 def printUsage():
     print("=======================")
@@ -31,7 +31,7 @@ def startExhust(exhustServerInfo):
     # at the folder of the running python files. best of luck
     #Omer Ornan- English Teacher and sexual Instructor.
     webInfo = test_HTTP_connection_tolerance(exhustServerInfo["DOM"])
-    wbSt = 'wsInfo: %d' % (webInfo,)
+    wbSt = str(exhustServerInfo["ipv4"]) + ': %d' % (webInfo,)
     print(wbSt)
     print("hh")
     resolverString = []
@@ -48,8 +48,9 @@ def startExhust(exhustServerInfo):
     for nsInfo in ns:
         print("dfgjj")
         dnsInfo = dnsExhaust(nsInfo)
-        stDns='nsInfo %s: %s'%(nsInfo[0], dnsInfo)
-        nsString.append(stDns)
+        # stDns='nsInfo %s: %s'%(nsInfo[0], dnsInfo)
+        #stDns = "%s: %s" %(nsInfo[0], dnsInfo)
+        nsString.append(dnsInfo)
     return {'nsInfo' : nsString, 'webInfo' : wbSt, 'resInfo' : resolverString}
 
 
@@ -72,12 +73,15 @@ def main(argv):
 
     getURL=urlGenerator(argv[1])
     url = next(getURL)
-    writeToFile=csv.DictWriter(open(argv[2],'w'), delimiter=',',lineterminator='\n', fieldnames=headers)
-    writeToFile.writerow({Domain:Domain,ns:ns,ws:ws,dns : dns})
+    with open(argv[2], "w") as csvFile:
+        writeToFile = csv.DictWriter(csvFile, delimiter=',',lineterminator='\n', fieldnames=headers)
+        writeToFile.writerow({Domain: Domain, dns: dns, ns: ns, ws: ws})
     while url!=True:
         exhustServerInfo=create_domain_dict(url)
         infoToWrite=startExhust(exhustServerInfo)
-        writeToFile.writerow({Domain : url, ns : infoToWrite['nsInfo'], ws : infoToWrite['webInfo'] , dns:infoToWrite['resInfo']})
+        with open(argv[2], "a") as csvFile:
+            writeToFile = csv.DictWriter(csvFile, delimiter=',', lineterminator='\n', fieldnames=headers)
+            writeToFile.writerow({Domain : url, ns : "\r\n".join(infoToWrite['nsInfo']), dns: "\r\n".join(infoToWrite['resInfo']), ws : infoToWrite['webInfo']})
         url = next(getURL)
         # return# TODO MOVE THIS SHIT
 
