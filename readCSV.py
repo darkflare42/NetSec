@@ -30,7 +30,6 @@ def startExhust(exhustServerInfo):
     #TODO OR PLEASE MAKE SURE THE Http tool return any value you want. this value will be written to the "file3.csv
     # at the folder of the running python files. best of luck
     #Omer Ornan- English Teacher and sexual Instructor.
-    print(str(exhustServerInfo['ipv4']))
     webInfo = test_HTTP_connection_tolerance(exhustServerInfo["DOM"])
     wbSt = 'wsInfo: %d' % (webInfo,)
     print(wbSt)
@@ -80,7 +79,7 @@ def main(argv):
         infoToWrite=startExhust(exhustServerInfo)
         writeToFile.writerow({Domain : url, ns : infoToWrite['nsInfo'], ws : infoToWrite['webInfo'] , dns:infoToWrite['resInfo']})
         url = next(getURL)
-        return# TODO MOVE THIS SHIT
+        # return# TODO MOVE THIS SHIT
 
 # main()
 if __name__ == "__main__":

@@ -10,7 +10,7 @@ import CounterWrapper
 
 TIME_INTERVAL = 0.1 #ms
 NOT_TCP = 2
-MAX_THREADS = 500
+MAX_THREADS = 10
 
 def createTcpConnection(threadName,IP_ADDRESS,queryCheck,Bucket):
     #queryCheck = dns.message.make_query('www.google.com', 2)
@@ -99,6 +99,6 @@ def test_HTTP_connection_tolerance(url):
             # deal with the exception
             print(exc_type, exc_obj)
             print(exc_trace)
-            [thread.stop() for thread in all_threads]
+            [thread.stopit() for thread in all_threads]
             [thread.join(0.1) for thread in all_threads]
-            return str(counter.get_value())
+            return counter.get_value()

@@ -24,7 +24,7 @@ class Threaded_Test(threading.Thread):
         self._counter = counter
         schedule.every(ADD_CONN_INTERVAL).seconds.do(self.open_connection)
         self._connections = []
-        self._stop = threading.Event()
+        self._stopper = threading.Event()
 
     def run(self):
         self.open_connection()
@@ -32,13 +32,15 @@ class Threaded_Test(threading.Thread):
         while True:
             try:
                 if self.stopped():
+                    for h1 in self._connections:
+                        h1.close()
                     break
                 schedule.run_pending()
                 for h1 in self._connections:
                     h1.request("GET", "/", headers={"Connection": " keep-alive"})
                     r1 = h1.getresponse()
                     r1.read()
-                    print(r1.status, r1.reason)
+                    # print(r1.status, r1.reason)
                     if r1.status != 200:
                         raise Exception("Server stopped responding 200")
                 time.sleep(TIME_INTERVAL)
@@ -46,13 +48,13 @@ class Threaded_Test(threading.Thread):
             except ConnectionError as ex:
                 print("Connection error, forcibly closed")
                 self.bucket.put(sys.exc_info())
-                self.stop()
+                self.stopit()
                 # raise Exception("Connection forcibly closed")
             except Exception as e:
                 print(e)
                 #print("Oops! something went wrong with HTTP testing")
                 self.bucket.put(sys.exc_info())
-                self.stop()
+                self.stopit()
 
     def open_connection(self):
         try:
@@ -62,11 +64,11 @@ class Threaded_Test(threading.Thread):
         except:
             print("Connection error, Could not open new connection")
             self.bucket.put(sys.exc_info())
-            self.stop()
+            self.stopit()
             # raise Exception("Connection not possible")
 
-    def stop(self):
-        self._stop.set()
+    def stopit(self):
+        self._stopper.set()
 
     def stopped(self):
-        return self._stop.isSet()
+        return self._stopper.isSet()
