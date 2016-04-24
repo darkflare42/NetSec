@@ -6,9 +6,11 @@ import time
 import NetModule
 import queue
 import HTTP_Tester
+import CounterWrapper
 
 TIME_INTERVAL = 0.1 #ms
 NOT_TCP = 2
+MAX_THREADS = 500
 
 def createTcpConnection(threadName,IP_ADDRESS,queryCheck,Bucket):
     #queryCheck = dns.message.make_query('www.google.com', 2)
@@ -63,7 +65,7 @@ def dnsExhaust(info):
 
 
 
-def test_HTTP_connection_tolerance(url, ip):
+def test_HTTP_connection_tolerance(url):
     """
     Does the same thing as the TCP Queries, but for HTTP
     :param info:
@@ -71,23 +73,25 @@ def test_HTTP_connection_tolerance(url, ip):
     """
 
     INTERVAL = 0.1
-    num_of_connections = 0
+    num_of_threads = 0
     all_threads = []
     bucket = queue.Queue()
-
+    counter = CounterWrapper.CounterWrapper()
+    stop_adding_threads = False
     while True:
         try:
-
-            num_of_connections += 1
-            if num_of_connections%40==0:
-                print("Num of connections is: " + str(num_of_connections))
-            thread_obj = HTTP_Tester.Threaded_Test(bucket, url, ip)
-            thread_obj.start()
-            all_threads.append(thread_obj)
+            if num_of_threads % 40 == 0:
+                print("Num of threads is: " + str(num_of_threads))
+            if num_of_threads <= MAX_THREADS and (not stop_adding_threads):
+                thread_obj = HTTP_Tester.Threaded_Test(bucket, url, counter)
+                thread_obj.start()
+                all_threads.append(thread_obj)
+                num_of_threads += 1
             time.sleep(INTERVAL)
             exc = bucket.get(block=False)
-        except RuntimeError as e:
+        except RuntimeError as e:  # This is presumably because we reached the max num of threads
             print("Runtime Error!")
+            stop_adding_threads = True
         except queue.Empty:
             pass
         else:
@@ -95,5 +99,6 @@ def test_HTTP_connection_tolerance(url, ip):
             # deal with the exception
             print(exc_type, exc_obj)
             print(exc_trace)
+            [thread.stop() for thread in all_threads]
             [thread.join(0.1) for thread in all_threads]
-            return num_of_connections
+            return str(counter.get_value())
