@@ -27,7 +27,7 @@ def checkIfSupportTCP(info):
     global NOT_TCP
     try:
         dns.query.tcp(info[1],info[0],timeout=NOT_TCP)
-    except dns.exception.Timeout:
+    except:
         return False
     return True
 
