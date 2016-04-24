@@ -59,9 +59,9 @@ def main(argv):
 
     # bucket = queue.Queue()
     # counter = CounterWrapper.CounterWrapper()
-    # thread_obj = HTTP_Tester.Threaded_Test(bucket, 'www.google.co.il', counter)
+    # thread_obj = HTTP_Tester.Threaded_Test(bucket, 'ynet.co.il', counter)
     # thread_obj.start()
-    # time.sleep(10)
+    #time.sleep(10000)
     # thread_obj.stop()
     # thread_obj.join(0.1)
     #num_of_connections = test_HTTP_connection_tolerance("www.ynet.co.il" ,"128.139.199.8")  # OR: This is to test the http tolerance

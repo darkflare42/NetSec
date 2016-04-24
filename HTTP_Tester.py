@@ -1,7 +1,7 @@
 import threading
 import sys
 import socket
-import urllib.parse
+from urllib.parse import urlparse
 import time
 import http.client
 import schedule
@@ -25,9 +25,23 @@ class Threaded_Test(threading.Thread):
         schedule.every(ADD_CONN_INTERVAL).seconds.do(self.open_connection)
         self._connections = []
         self._stopper = threading.Event()
+        self._path = "/"
 
     def run(self):
         self.open_connection()
+
+        # Run a simple get operation - this allows us to change the url or the path in case we get 301 or 302 message
+        h = http.client.HTTPConnection(self._url, 80)
+        h.request("GET", self._path, headers={"Connection": " keep-alive"})
+        r1 = h.getresponse()
+        r1.read()
+
+        if r1.status == 301:  # Moved permanently, the path has changed
+            self._path = r1.getheader("Location")
+        elif r1.status == 302:  # Moved temporarily, the whole url has changed
+            self._url = r1.getheader("Location")
+
+        h.close()
 
         while True:
             try:
@@ -37,12 +51,11 @@ class Threaded_Test(threading.Thread):
                     break
                 schedule.run_pending()
                 for h1 in self._connections:
-                    h1.request("GET", "/", headers={"Connection": " keep-alive"})
+                    h1.request("GET", self._path, headers={"Connection": " keep-alive"})
                     r1 = h1.getresponse()
                     r1.read()
-                    # print(r1.status, r1.reason)
                     if r1.status != 200:
-                        raise Exception("Server stopped responding 200")
+                        raise Exception("Server stopped responding 200 or 302")
                 time.sleep(TIME_INTERVAL)
 
             except ConnectionError as ex:
