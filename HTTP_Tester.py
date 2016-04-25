@@ -6,7 +6,8 @@ import time
 import http.client
 import schedule
 import CounterWrapper
-
+#from exhaustingTools import lock
+import exhaustingTools
 
 
 CRLF = "\r\n"
@@ -22,36 +23,48 @@ class Threaded_Test(threading.Thread):
         self.bucket = bucket
         self._url = site_url
         self._counter = counter
-        schedule.every(ADD_CONN_INTERVAL).seconds.do(self.open_connection)
+        self._job = schedule.every(ADD_CONN_INTERVAL).seconds.do(self.open_connection)
         self._connections = []
         self._stopper = threading.Event()
         self._path = "/"
 
     def run(self):
-        self.open_connection()
+        # self.open_connection()
 
         # Run a simple get operation - this allows us to change the url or the path in case we get 301 or 302 message
-        h = http.client.HTTPConnection(self._url, 80)
-        h.request("GET", self._path, headers={"Connection": " keep-alive"})
-        r1 = h.getresponse()
-        r1.read()
+        try:
+            h = http.client.HTTPConnection(self._url, 80, timeout=10)
+            # h.
+            h.request("GET", self._path, headers={"Connection": " keep-alive"})
+            r1 = h.getresponse()
+            r1.read()
 
-        if r1.status == 301:  # Moved permanently, the path has changed
-            self._path = r1.getheader("Location")
-        elif r1.status == 302:  # Moved temporarily, the whole url has changed
-            self._url = r1.getheader("Location")
+            if r1.status == 301:  # Moved permanently, the path has changed
+                self._path = r1.getheader("Location")
+            elif r1.status == 302:  # Moved temporarily, the whole url has changed
+                self._url = r1.getheader("Location")
 
-        h.close()
+            h.close()
+        except:
+            raise Exception("Failed on first connection")
 
         while True:
             try:
-                if self.stopped():
+                if self._stopper.isSet():
+                    schedule.cancel_job(self._job)
                     for h1 in self._connections:
                         h1.close()
                     break
+                    #return
                 schedule.run_pending()
                 for h1 in self._connections:
-                    h1.request("GET", self._path, headers={"Connection": " keep-alive"})
+                    try:
+
+                        h1.request("GET", self._path, headers={"Connection": " keep-alive"})
+                    except http.client.CannotSendRequest:
+                        print("Could not send request")
+                        raise Exception("Previous response was not received")
+
                     r1 = h1.getresponse()
                     r1.read()
                     if r1.status != 200:
@@ -61,19 +74,24 @@ class Threaded_Test(threading.Thread):
             except ConnectionError as ex:
                 print("Connection error, forcibly closed")
                 self.bucket.put(sys.exc_info())
-                self.stopit()
+                self.bucket.put(ex)
+                # self.stopit()
                 # raise Exception("Connection forcibly closed")
             except Exception as e:
                 print(e)
                 #print("Oops! something went wrong with HTTP testing")
-                self.bucket.put(sys.exc_info())
                 self.stopit()
+                self.bucket.put(sys.exc_info())
+                self.bucket.put(e)
+
 
     def open_connection(self):
         try:
-            h = http.client.HTTPConnection(self._url, 80)
+            h = http.client.HTTPConnection(self._url, 80, timeout=10)
             self._connections.append(h)
-            self._counter.increment()
+            with exhaustingTools.lock:
+                self._counter.increment()
+
         except:
             print("Connection error, Could not open new connection")
             self.bucket.put(sys.exc_info())

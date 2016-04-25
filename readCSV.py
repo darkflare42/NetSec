@@ -32,12 +32,14 @@ def startExhust(exhustServerInfo):
     #Omer Ornan- English Teacher and sexual Instructor.
     webInfo = test_HTTP_connection_tolerance(exhustServerInfo["DOM"])
     wbSt = str(exhustServerInfo["ipv4"]) + ': %d' % (webInfo,)
+
     print(wbSt)
     print("hh")
     resolverString = []
     resolver = exhustServerInfo['RESOLVER']
     for rs in resolver:
-        rsInfo = dnsExhaust(rs)
+        # rsInfo = dnsExhaust(rs)
+        rsInfo = "test"
         print(rsInfo)
         print(rs[0])
         rsSt= 'dns info %s: %s' % (rs[0],rsInfo)
@@ -47,7 +49,8 @@ def startExhust(exhustServerInfo):
     print("dfg")
     for nsInfo in ns:
         print("dfgjj")
-        dnsInfo = dnsExhaust(nsInfo)
+        # dnsInfo = dnsExhaust(nsInfo)
+        dnsInfo = "test"
         # stDns='nsInfo %s: %s'%(nsInfo[0], dnsInfo)
         #stDns = "%s: %s" %(nsInfo[0], dnsInfo)
         nsString.append(dnsInfo)

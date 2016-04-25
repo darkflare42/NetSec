@@ -65,7 +65,7 @@ def dnsExhaust(info):
 
 
 
-
+lock = threading.Lock()
 
 def test_HTTP_connection_tolerance(url):
     """
@@ -80,6 +80,8 @@ def test_HTTP_connection_tolerance(url):
     bucket = queue.Queue()
     counter = CounterWrapper.CounterWrapper()
     stop_adding_threads = False
+
+
     while True:
         try:
             if num_of_threads % 40 == 0:
@@ -97,10 +99,12 @@ def test_HTTP_connection_tolerance(url):
         except queue.Empty:
             pass
         else:
-            exc_type, exc_obj, exc_trace = exc
+            print("Got Exception from HTTP!")
+            # exc_type, exc_obj, exc_trace = exc
+
             # deal with the exception
-            print(exc_type, exc_obj)
-            print(exc_trace)
+            #print(exc_type, exc_obj)
+            #print(exc_trace)
             [thread.stopit() for thread in all_threads]
             [thread.join(0.1) for thread in all_threads]
             return counter.get_value()
