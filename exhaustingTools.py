@@ -16,7 +16,7 @@ CON_THRAD=True
 def createTcpConnection(threadName,IP_ADDRESS,queryCheck,Bucket):
     #queryCheck = dns.message.make_query('www.google.com', 2)
     global  CON_THRAD
-
+    #print(threadName)
     try:
         while CON_THRAD :
             dns.query.tcp(queryCheck,IP_ADDRESS)
@@ -37,6 +37,7 @@ def startSendIncrementTCPQueries(info):
    # PORT_IN_USE = 1024
     global TIME_INTERVAL
     global CON_THRAD
+    CON_THRAD=True
     numberOfConnection = 1
     allThread = []
     Bucket=[]
@@ -49,7 +50,6 @@ def startSendIncrementTCPQueries(info):
             time.sleep(TIME_INTERVAL)
         print("//")
         [t.join() for t in allThread]
-        CON_THRAD=True
         print("dddd")
         return numberOfConnection
     except:
@@ -86,6 +86,7 @@ def test_HTTP_connection_tolerance(url, ip):
     stop_adding_threads = False
 
 
+
     while True:
         try:
             if num_of_threads % 40 == 0:
@@ -101,7 +102,6 @@ def test_HTTP_connection_tolerance(url, ip):
             print("Runtime Error!")
             stop_adding_threads = True
         except queue.Empty:
-            print("queque Empty")
             pass
         else:
             print("Got Exception from HTTP!")

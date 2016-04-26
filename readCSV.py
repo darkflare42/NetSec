@@ -32,7 +32,6 @@ def startExhust(exhustServerInfo):
     #Omer Ornan- English Teacher and sexual Instructor.
     webInfo = test_HTTP_connection_tolerance(exhustServerInfo["DOM"], str(exhustServerInfo["ipv4"]))
     wbSt = str(exhustServerInfo["ipv4"]) + ': %d' % (webInfo,)
-
     print(wbSt)
     resolverString = []
     resolver = exhustServerInfo['RESOLVER']
@@ -79,6 +78,7 @@ def main(argv):
         writeToFile.writerow({Domain: Domain, dns: dns, ns: ns, ws: ws})
     while url!=True:
         exhustServerInfo=create_domain_dict(url)
+        print(exhustServerInfo)
         infoToWrite=startExhust(exhustServerInfo)
         with open(argv[2], "a") as csvFile:
             writeToFile = csv.DictWriter(csvFile, delimiter=',', lineterminator='\n', fieldnames=headers)
