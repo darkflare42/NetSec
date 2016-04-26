@@ -10,7 +10,7 @@ import CounterWrapper
 
 TIME_INTERVAL = 0.1 #ms
 NOT_TCP = 2
-MAX_THREADS = 10
+MAX_THREADS = 5
 
 def createTcpConnection(threadName,IP_ADDRESS,queryCheck,Bucket):
     #queryCheck = dns.message.make_query('www.google.com', 2)
@@ -67,7 +67,7 @@ def dnsExhaust(info):
 
 lock = threading.Lock()
 
-def test_HTTP_connection_tolerance(url):
+def test_HTTP_connection_tolerance(url, ip):
     """
     Does the same thing as the TCP Queries, but for HTTP
     :param info:
@@ -87,7 +87,7 @@ def test_HTTP_connection_tolerance(url):
             if num_of_threads % 40 == 0:
                 print("Num of threads is: " + str(num_of_threads))
             if num_of_threads <= MAX_THREADS and (not stop_adding_threads):
-                thread_obj = HTTP_Tester.Threaded_Test(bucket, url, counter)
+                thread_obj = HTTP_Tester.Threaded_Test(bucket, url, ip, counter)
                 thread_obj.start()
                 all_threads.append(thread_obj)
                 num_of_threads += 1
@@ -106,5 +106,5 @@ def test_HTTP_connection_tolerance(url):
             #print(exc_type, exc_obj)
             #print(exc_trace)
             [thread.stopit() for thread in all_threads]
-            [thread.join(0.1) for thread in all_threads]
+            [thread.join() for thread in all_threads]
             return counter.get_value()

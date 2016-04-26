@@ -30,7 +30,7 @@ def startExhust(exhustServerInfo):
     #TODO OR PLEASE MAKE SURE THE Http tool return any value you want. this value will be written to the "file3.csv
     # at the folder of the running python files. best of luck
     #Omer Ornan- English Teacher and sexual Instructor.
-    webInfo = test_HTTP_connection_tolerance(exhustServerInfo["DOM"])
+    webInfo = test_HTTP_connection_tolerance(exhustServerInfo["DOM"], str(exhustServerInfo["ipv4"]))
     wbSt = str(exhustServerInfo["ipv4"]) + ': %d' % (webInfo,)
 
     print(wbSt)
@@ -38,20 +38,19 @@ def startExhust(exhustServerInfo):
     resolverString = []
     resolver = exhustServerInfo['RESOLVER']
     for rs in resolver:
-        # rsInfo = dnsExhaust(rs)
-        rsInfo = "test"
+        rsInfo = dnsExhaust(rs)
         print(rsInfo)
         print(rs[0])
-        rsSt= 'dns info %s: %s' % (rs[0],rsInfo)
+        #rsSt= 'dns info %s: %s' % (rs[0],rsInfo)
         resolverString.append(rsInfo)
 
     ns = exhustServerInfo['NS']
     print("dfg")
     for nsInfo in ns:
         print("dfgjj")
-        # dnsInfo = dnsExhaust(nsInfo)
-        dnsInfo = "test"
-        # stDns='nsInfo %s: %s'%(nsInfo[0], dnsInfo)
+        dnsInfo = dnsExhaust(nsInfo)
+
+        #stDns='nsInfo %s: %s'%(nsInfo[0], dnsInfo)
         #stDns = "%s: %s" %(nsInfo[0], dnsInfo)
         nsString.append(dnsInfo)
     return {'nsInfo' : nsString, 'webInfo' : wbSt, 'resInfo' : resolverString}
@@ -63,9 +62,9 @@ def main(argv):
 
     # bucket = queue.Queue()
     # counter = CounterWrapper.CounterWrapper()
-    # thread_obj = HTTP_Tester.Threaded_Test(bucket, 'ynet.co.il', counter)
+    # thread_obj = HTTP_Tester.Threaded_Test(bucket, 'baidu.com', "", counter)
     # thread_obj.start()
-    #time.sleep(10000)
+    # time.sleep(30)
     # thread_obj.stop()
     # thread_obj.join(0.1)
     #num_of_connections = test_HTTP_connection_tolerance("www.ynet.co.il" ,"128.139.199.8")  # OR: This is to test the http tolerance
