@@ -11,16 +11,17 @@ import CounterWrapper
 TIME_INTERVAL = 0.1 #ms
 NOT_TCP = 2
 MAX_THREADS = 5
+CON_THRAD=True
 
 def createTcpConnection(threadName,IP_ADDRESS,queryCheck,Bucket):
     #queryCheck = dns.message.make_query('www.google.com', 2)
-    print(threadName)
-    try:
-        while len(Bucket) == 0:
+    global  CON_THRAD
 
+    try:
+        while CON_THRAD :
             dns.query.tcp(queryCheck,IP_ADDRESS)
     except:
-        Bucket.append(1)
+        CON_THRAD=False
 
 
 def checkIfSupportTCP(info):
@@ -32,13 +33,15 @@ def checkIfSupportTCP(info):
     return True
 
 def startSendIncrementTCPQueries(info):
+
    # PORT_IN_USE = 1024
     global TIME_INTERVAL
+    global CON_THRAD
     numberOfConnection = 1
     allThread = []
     Bucket=[]
     try:
-        while len(Bucket) == 0:
+        while CON_THRAD:
             numberOfConnection += 1
             t=threading.Thread(target=createTcpConnection, args=("thread name %d"%(numberOfConnection),info[0],info[1],Bucket))
             allThread.append(t)
@@ -46,6 +49,7 @@ def startSendIncrementTCPQueries(info):
             time.sleep(TIME_INTERVAL)
         print("//")
         [t.join() for t in allThread]
+        CON_THRAD=True
         print("dddd")
         return numberOfConnection
     except:
@@ -97,6 +101,7 @@ def test_HTTP_connection_tolerance(url, ip):
             print("Runtime Error!")
             stop_adding_threads = True
         except queue.Empty:
+            print("queque Empty")
             pass
         else:
             print("Got Exception from HTTP!")

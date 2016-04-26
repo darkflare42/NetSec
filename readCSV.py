@@ -34,7 +34,6 @@ def startExhust(exhustServerInfo):
     wbSt = str(exhustServerInfo["ipv4"]) + ': %d' % (webInfo,)
 
     print(wbSt)
-    print("hh")
     resolverString = []
     resolver = exhustServerInfo['RESOLVER']
     for rs in resolver:
