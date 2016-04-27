@@ -16,11 +16,13 @@ CON_THRAD=True
 def createTcpConnection(threadName,IP_ADDRESS,queryCheck,Bucket):
     #queryCheck = dns.message.make_query('www.google.com', 2)
     global  CON_THRAD
-    #print(threadName)
+    print(threadName)
     try:
         while CON_THRAD :
             dns.query.tcp(queryCheck,IP_ADDRESS)
+        print("close"+threadName)
     except:
+        print("close" + threadName)
         CON_THRAD=False
 
 
@@ -33,7 +35,6 @@ def checkIfSupportTCP(info):
     return True
 
 def startSendIncrementTCPQueries(info):
-
    # PORT_IN_USE = 1024
     global TIME_INTERVAL
     global CON_THRAD
@@ -49,12 +50,12 @@ def startSendIncrementTCPQueries(info):
             t.start()
             time.sleep(TIME_INTERVAL)
         print("//")
-        [t.join() for t in allThread]
+        [t.join(1) for t in allThread]
         print("dddd")
         return numberOfConnection
     except:
         #using flag
-        [t.join() for t in allThread]
+        [t.join(1) for t in allThread]
         return numberOfConnection
 
 

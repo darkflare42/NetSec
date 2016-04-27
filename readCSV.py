@@ -77,6 +77,9 @@ def main(argv):
         writeToFile = csv.DictWriter(csvFile, delimiter=',',lineterminator='\n', fieldnames=headers)
         writeToFile.writerow({Domain: Domain, dns: dns, ns: ns, ws: ws})
     while url!=True:
+        print('##########################3')
+        print(url)
+        print('############')
         exhustServerInfo=create_domain_dict(url)
         print(exhustServerInfo)
         infoToWrite=startExhust(exhustServerInfo)
@@ -84,6 +87,8 @@ def main(argv):
             writeToFile = csv.DictWriter(csvFile, delimiter=',', lineterminator='\n', fieldnames=headers)
             writeToFile.writerow({Domain : url, ns : "\r\n".join(infoToWrite['nsInfo']), dns: "\r\n".join(infoToWrite['resInfo']), ws : infoToWrite['webInfo']})
         url = next(getURL)
+
+    return;
         # return# TODO MOVE THIS SHIT
 
 # main()
