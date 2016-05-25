@@ -19,7 +19,7 @@ def createTcpConnection(threadName,IP_ADDRESS,queryCheck,Bucket):
     print(threadName)
     try:
         while CON_THRAD :
-            dns.query.tcp(queryCheck,IP_ADDRESS)
+            dns.query.tcp(queryCheck,IP_ADDRESS,timeout=1800)
         print("close"+threadName)
     except:
         print("close" + threadName)
@@ -39,7 +39,7 @@ def startSendIncrementTCPQueries(info):
     global TIME_INTERVAL
     global CON_THRAD
     CON_THRAD=True
-    numberOfConnection = 1
+    numberOfConnection = 0
     allThread = []
     Bucket=[]
     try:
@@ -78,7 +78,8 @@ def test_HTTP_connection_tolerance(url, ip):
     :param info:
     :return: The number of HTTP connections the server allowed to open
     """
-
+    if ip == "":
+        return -1
     INTERVAL = 0.1
     num_of_threads = 0
     all_threads = []

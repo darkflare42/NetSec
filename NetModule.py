@@ -16,6 +16,10 @@ def create_domain_dict(domain):
     """
     domain_dict = {"DOM": domain, "NS": [], "RESOLVER": []}
     get_webserver_ips(domain, domain_dict)
+    #print("sdfsdf")
+    if "ipv4" not in domain_dict:
+        domain_dict["ipv4"] = ""
+   # print("sdfsdfdddd")
     get_resolver_ips(domain, domain_dict)
     get_authoritive_nameserver_ips(domain, domain_dict)
     return domain_dict
@@ -26,10 +30,13 @@ def get_webserver_ips(domain, dictionary):
         answers = dns.resolver.query(domain, "A")  # ipv4
         for rdata in answers:
             dictionary["ipv4"] = rdata
-        answers = dns.resolver.query(domain, "AAAA")  # ipv6
-        for rdata in answers:
-            dictionary["ipv6"] = rdata
+        #answers = dns.resolver.query(domain, "AAAA")  # ipv6   #:TODO: For extra information we can leave this in but make sure to catch NoNameservers exception
+        #for rdata in answers:
+        #    dictionary["ipv6"] = rdata
+
     except dns.resolver.NoAnswer:
+        pass
+    except dns.resolver.NoNameservers:
         pass
 
 

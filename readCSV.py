@@ -31,8 +31,11 @@ def startExhust(exhustServerInfo):
     # at the folder of the running python files. best of luck
     #Omer Ornan- English Teacher and sexual Instructor.
     webInfo = test_HTTP_connection_tolerance(exhustServerInfo["DOM"], str(exhustServerInfo["ipv4"]))
-    wbSt = str(exhustServerInfo["ipv4"]) + ': %d' % (webInfo,)
-    print(wbSt)
+    if webInfo == -1:
+        wbSt = "N/A"
+    else:
+        wbSt = str(exhustServerInfo["ipv4"]) + ': %d' % (webInfo,)
+    #print(wbSt)
     resolverString = []
     resolver = exhustServerInfo['RESOLVER']
     for rs in resolver:
